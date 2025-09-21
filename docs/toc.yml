@@ -1,0 +1,25 @@
+- name: Overview
+  href: index.md
+- name: Introduction
+  href: introduction.md
+- name: Rationale
+  href: rationale.md
+- name: Installation
+  href: installation.md
+- name: Getting Started
+  href: getting-started.md
+- name: DSL Reference
+  href: dsl-reference.md
+- name: Tooling & CI
+  href: tooling-ci.md
+- name: Methodology
+  href: methodology.md
+- name: Experimental Status
+  href: experimental-status.md
+- name: FAQ
+  href: faq.md
+- name: Roadmap
+  href: roadmap.md
+- name: Contributing
+  href: contributing.md
+

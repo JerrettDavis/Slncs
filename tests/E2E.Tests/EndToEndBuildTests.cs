@@ -15,7 +15,8 @@ public class EndToEndBuildTests(ITestOutputHelper output)
     public void Dotnet_Build_Works_On_Slncs_Wrapper()
     {
         var root = RepoRoot();
-        var samplesDir = Path.Combine(root, "samples");
+        var samplesBaseDir = Path.Combine(root, "samples");
+        var samplesDir = Path.Combine(samplesBaseDir, "template");
         var wrapper = Path.Combine(samplesDir, "MyCsSln.slncs");
         Assert.True(File.Exists(wrapper), "Sample wrapper must exist.");
 
@@ -35,6 +36,7 @@ public class EndToEndBuildTests(ITestOutputHelper output)
             output.WriteLine("--- wrapper stdout ---\n" + stdout);
             output.WriteLine("--- wrapper stderr ---\n" + stderr);
         }
+
         Assert.Equal(0, p.ExitCode);
         output.WriteLine(stdout);
 
@@ -48,6 +50,7 @@ public class EndToEndBuildTests(ITestOutputHelper output)
             foreach (var path in Directory.EnumerateFiles(Path.Combine(samplesDir, "src"), "*", SearchOption.AllDirectories))
                 output.WriteLine(path);
         }
+
         Assert.True(File.Exists(consoleDll), "Console application should have been built by direct parse pipeline.");
     }
 
@@ -55,12 +58,14 @@ public class EndToEndBuildTests(ITestOutputHelper output)
     public void Slncs_Build_Tool_Works_On_Pure_Script()
     {
         var root = RepoRoot();
-        var samplesDir = Path.Combine(root, "samples");
+        var samplesBaseDir = Path.Combine(root, "samples");
+        var samplesDir = Path.Combine(samplesBaseDir, "template");
         var toolDir = Path.Combine(root, "Slncs.Tool");
         Assert.True(Directory.Exists(toolDir), "Tool project must exist");
 
         var pureScript = Path.Combine(samplesDir, "MyCsSlnSingle.slncs");
-        File.WriteAllText(pureScript, "using Slncs;\nSolution.Create()\n    .Folder(\"/Solution Items\", f => f.Files(\"Directory.Build.props\"))\n    .Project(@\"src/ClassLibrary1/ClassLibrary1.csproj\")\n    .Project(@\"src/ConsoleApp1/ConsoleApp1.csproj\")\n    .Write(OutputPath);\n");
+        File.WriteAllText(pureScript,
+            "using Slncs;\nSolution.Create()\n    .Folder(\"/Solution Items\", f => f.Files(\"Directory.Build.props\"))\n    .Project(@\"src/ClassLibrary1/ClassLibrary1.csproj\")\n    .Project(@\"src/ConsoleApp1/ConsoleApp1.csproj\")\n    .Write(OutputPath);\n");
 
         var psi = new ProcessStartInfo("dotnet", $"run --project \"{toolDir}\" -- \"{pureScript}\"")
         {
@@ -78,6 +83,7 @@ public class EndToEndBuildTests(ITestOutputHelper output)
             output.WriteLine("--- tool stdout ---\n" + stdout);
             output.WriteLine("--- tool stderr ---\n" + stderr);
         }
+
         Assert.Equal(0, p.ExitCode);
         output.WriteLine(stdout);
 
@@ -88,6 +94,13 @@ public class EndToEndBuildTests(ITestOutputHelper output)
         Assert.True(File.Exists(consoleDll), "Console application should have been built by slncs-build tool.");
 
         // cleanup generated script to keep repo clean for subsequent tests
-        try { File.Delete(pureScript); } catch { /* ignore */ }
+        try
+        {
+            File.Delete(pureScript);
+        }
+        catch
+        {
+            /* ignore */
+        }
     }
 }

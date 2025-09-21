@@ -1,5 +1,7 @@
 # Slncs
 
+> NOTE: Microsoft has introduced a simplified XML solution format also named `.slnx`. This project is **independent** and focuses on going a step further—authoring the solution graph *directly in C#* (and emitting a lean `.slnx` manifest). If ambiguity becomes problematic we may add support for an alternate extension (e.g. `.cslnx`).
+
 Fluent, strongly-typed C# DSL for describing a .NET "solution" and generating a compact **`.slnx`** file that MSBuild can parse to build all referenced projects. Provides two consumption modes:
 
 1. Wrapper project (XML) referencing a C# script (current / stable) — build with `dotnet build MySolution.slncs`.
@@ -201,18 +203,20 @@ dotnet test -c Debug
 Recommended workflow:
 ```bash
 # 1. Clone
- git clone <repo>
- cd Slncs
+git clone <repo>
+cd Slncs
 
 # 2. Build everything (including tool + generator copied into SDK tools folder)
- dotnet build
+dotnet build
 
-# 3. Run a sample wrapper
- dotnet build samples/MyCsSln.slncs
+# 3. Run the wrapper sample (template)
+dotnet build samples/template/MyCsSln.slncs
 
-# 4. Try pure script mode
- copy samples/MyCsSln.slncs.cs samples/InlineOnly.slncs
- dotnet run --project Slncs.Tool -- samples/InlineOnly.slncs
+# 4. Run the pure script sample (no wrapper)
+# Using the tool project directly (dev scenario):
+dotnet run --project Slncs.Tool -- samples/pure/MyCsSln.slncs
+# Or if you installed the tool globally:
+slncs-build samples/pure/MyCsSln.slncs
 ```
 
 ---
@@ -236,9 +240,5 @@ dotnet test
 
 ---
 ## License
-MIT
-
----
-## Attribution
-Created by Jerrett Davis. Contributions welcome! Open issues and PRs with clear reproduction or feature rationale.
+[MIT](LICENSE)
 

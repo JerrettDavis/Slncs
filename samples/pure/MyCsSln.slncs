@@ -1,0 +1,12 @@
+using Slncs;
+
+// Pure mode sample: build with:
+//   slncs-build samples/pure/MyCsSln.slncs
+// Demonstrates referencing projects located in the template sample directory.
+
+Solution.Create()
+    .Folder("/Solution Items", f => f.Files("../Directory.Build.props"))
+    .Project("../template/src/ClassLibrary1/ClassLibrary1.csproj")
+    .Project("../template/src/ConsoleApp1/ConsoleApp1.csproj")
+    .Write(OutputPath);
+
