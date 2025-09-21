@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <!-- Pack as an MSBuild SDK-like package -->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IsPackable>true</IsPackable>
+        <PackageId>Slncs.Sdk</PackageId>
+        <Version>0.1.20</Version>
+        <Authors>Jerrett Davis</Authors>
+        <Description>MSBuild SDK wrapper that generates .slnx from fluent .slncs.cs and forwards build.</Description>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/JerrettDavis/Slncs</RepositoryUrl>
+        <PackageTags>msbuild;sdk;slnx;solution;dotnet</PackageTags>
+        <IncludeBuildOutput>true</IncludeBuildOutput>
+    </PropertyGroup>
+
+    <!-- Ship Sdk.props/targets as buildTransitive so consumers auto-import them -->
+    <ItemGroup>
+        <None Include="Sdk\Sdk.props" Pack="true" PackagePath="Sdk/Sdk.props" />
+        <None Include="Sdk\Sdk.targets" Pack="true" PackagePath="Sdk/Sdk.targets" />
+    </ItemGroup>
+
+    <!-- Tools: include generator + all its copied local dependencies -->
+    <ItemGroup>
+        <Content Include="tools\net8.0\any\*.dll" Pack="true" PackagePath="tools/net8.0/any" />
+        <Content Include="tools\net8.0\any\*.pdb" Pack="true" PackagePath="tools/net8.0/any" />
+        <Content Include="tools\net8.0\any\*.json" Pack="true" PackagePath="tools/net8.0/any" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
+      <PackageReference Include="Microsoft.Build.Framework" Version="17.14.8" />
+      <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.14.8" />
+    </ItemGroup>
+
+    <!-- Make sure the SDK assembly is also packaged (lib/net8.0/Slncs.Sdk.dll) -->
+    <PropertyGroup>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <Target Name="CopyPackageToLocalFeed" AfterTargets="Pack">
+      <PropertyGroup>
+        <_LocalFeedDir>$(MSBuildProjectDirectory)\..\local-packages</_LocalFeedDir>
+      </PropertyGroup>
+      <MakeDir Directories="$( _LocalFeedDir )" />
+      <ItemGroup>
+        <_BuiltPackages Include="$(OutputPath)Slncs.Sdk.*.nupkg" />
+      </ItemGroup>
+      <Copy SourceFiles="@(_BuiltPackages)" DestinationFolder="$( _LocalFeedDir )" SkipUnchangedFiles="true" />
+      <Message Text="[slncs] Copied packages to $( _LocalFeedDir )" Importance="Low" />
+    </Target>
+</Project>

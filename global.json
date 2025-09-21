@@ -1,0 +1,8 @@
+{
+  "sdk": {
+    "version": "9.0.305"
+  },
+  "msbuild-sdks": {
+    "Slncs.Sdk": "0.1.20"
+  }
+}

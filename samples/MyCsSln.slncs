@@ -1,0 +1,6 @@
+<Project Sdk="Slncs.Sdk">
+  <PropertyGroup>
+    <SlncsFile>MyCsSln.slncs.cs</SlncsFile>
+    <GeneratedSlnx>obj\MyCsSln.slnx</GeneratedSlnx>
+  </PropertyGroup>
+</Project>
