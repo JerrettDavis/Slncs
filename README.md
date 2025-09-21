@@ -1,6 +1,5 @@
 # Slncs
 
-> NOTE: Microsoft has introduced a simplified XML solution format also named `.slnx`. This project is **independent** and focuses on going a step further—authoring the solution graph *directly in C#* (and emitting a lean `.slnx` manifest). If ambiguity becomes problematic we may add support for an alternate extension (e.g. `.cslnx`).
 
 Fluent, strongly-typed C# DSL for describing a .NET "solution" and generating a compact **`.slnx`** file that MSBuild can parse to build all referenced projects. Provides two consumption modes:
 

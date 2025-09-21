@@ -36,18 +36,18 @@ Add `global.json` (if not already present) mapping the SDK version you just buil
 ## Option 2: Local Feed / Packing
 Pack and add to a local feed directory:
 ```bash
-dotnet pack Slncs.Sdk -c Release -o ./local-packages
+dotnet pack src/Slncs.Sdk -c Release -o ./local-packages
 # (Optional) Pack the tool
- dotnet pack Slncs.Tool -c Release -o ./local-packages
+dotnet pack src/Slncs.Tool -c Release -o ./local-packages
 ```
 Reference via `nuget.config` (add a local package source) or by adding the SDK version to `global.json` (NuGet fallback folder will resolve it if available).
 
 ## Installing the Tool (Development Flow)
 Install from local folder:
 ```bash
-dotnet tool install --global Slncs.Tool --add-source ./local-packages
+dotnet tool install --global src/Slncs.Tool --add-source ./local-packages
 # or update later
-dotnet tool update --global Slncs.Tool --add-source ./local-packages
+dotnet tool update --global src/Slncs.Tool --add-source ./local-packages
 ```
 Verify:
 ```bash

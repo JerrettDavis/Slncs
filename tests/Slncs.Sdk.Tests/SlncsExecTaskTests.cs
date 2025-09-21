@@ -11,7 +11,7 @@ public class SlncsRunnerTests
     [Fact]
     public void Fails_When_Missing_Input()
     {
-        var gen = Path.Combine(RepoRoot(), "SlncsGen", "bin", "Debug", "net8.0", "SlncsGen.dll");
+        var gen = Path.Combine(RepoRoot(), "src","SlncsGen", "bin", "Debug", "net8.0", "SlncsGen.dll");
         var exit = SlncsRunner.Run("does-not-exist.slncs.cs", Path.GetTempFileName(), gen);
         Assert.NotEqual(0, exit);
     }
@@ -30,7 +30,7 @@ public class SlncsRunnerTests
                                   Solution.Create().Project(@"x\y.csproj").Write(OutputPath);
                                   """);
 
-        var gen = Path.Combine(root, "SlncsGen", "bin", "Debug", "net8.0", "SlncsGen.dll");
+        var gen = Path.Combine(root, "src", "SlncsGen", "bin", "Debug", "net8.0", "SlncsGen.dll");
         Assert.True(File.Exists(gen), "Build SlncsGen before running tests.");
 
         var exit = SlncsRunner.Run(script, outFile, gen);

@@ -38,7 +38,7 @@ dotnet test
 dotnet build samples/template/MyCsSln.slncs
 
 # Try pure script mode (create a single .slncs file)
-dotnet run --project Slncs.Tool -- samples/pure/MyCsSln.slncs
+dotnet run --project src/Slncs.Tool -- samples/pure/MyCsSln.slncs
 ```
 
 ## Branching & PRs

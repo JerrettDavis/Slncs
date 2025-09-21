@@ -24,7 +24,7 @@ public class GeneratorSmokeTests
                                   Solution.Create().Project(@"src\Demo\Demo.csproj").Write(OutputPath);
                                   """);
 
-        var exe = Path.Combine(root, "SlncsGen", "bin", "Debug", "net8.0", "SlncsGen.dll");
+        var exe = Path.Combine(root, "src", "SlncsGen", "bin", "Debug", "net8.0", "SlncsGen.dll");
         Assert.True(File.Exists(exe), "SlncsGen.dll must be built before tests.");
 
         var psi = new ProcessStartInfo("dotnet", $"exec \"{exe}\" --slncs \"{script}\" --out \"{outPath}\"")
