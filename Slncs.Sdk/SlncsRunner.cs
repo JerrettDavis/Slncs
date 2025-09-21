@@ -1,12 +1,27 @@
-using System;
 using System.Diagnostics;
-using System.IO;
 
 namespace Slncs.Sdk;
 
+/// <summary>
+/// Lightweight process helper that executes the Slncs generator (<c>SlncsGen.dll</c>) via <c>dotnet exec</c>
+/// and streams its stdout/stderr into provided writers. Performs basic validation and returns the
+/// generator process exit code (or <c>2</c> for argument/file validation errors before launch).
+/// </summary>
 public static class SlncsRunner
 {
-    /// <summary>Executes the generator: dotnet exec SlncsGen.dll --slncs &lt;in&gt; --out &lt;out&gt;.</summary>
+    /// <summary>
+    /// Execute the Slncs generator: <c>dotnet exec &lt;generatorDll&gt; --slncs &lt;slncsFile&gt; --out &lt;outFile&gt;</c>.
+    /// </summary>
+    /// <param name="slncsFile">Path to the C# solution script file.</param>
+    /// <param name="outFile">Target path for the generated <c>.slnx</c>.</param>
+    /// <param name="generatorDll">Path to the already built <c>SlncsGen.dll</c>.</param>
+    /// <param name="stdout">Optional writer for standard output (defaults to <see cref="Console.Out"/>).</param>
+    /// <param name="stderr">Optional writer for standard error (defaults to <see cref="Console.Error"/>).</param>
+    /// <returns>
+    /// Process exit code from the generator. Returns <c>2</c> if pre-flight validation fails
+    /// (missing script / output path / generator). A non-zero return (other than 2) indicates
+    /// the generator itself failed.
+    /// </returns>
     public static int Run(string slncsFile, string outFile, string generatorDll, TextWriter? stdout = null, TextWriter? stderr = null)
     {
         stdout ??= Console.Out;

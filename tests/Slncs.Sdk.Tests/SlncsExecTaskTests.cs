@@ -1,7 +1,4 @@
-using System;
-using System.IO;
 using Slncs.Sdk;
-using Xunit;
 
 public class SlncsRunnerTests
 {

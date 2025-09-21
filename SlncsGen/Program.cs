@@ -1,6 +1,4 @@
-﻿using System;
-using System.CommandLine;
-using System.IO;
+﻿using System.CommandLine;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Slncs;

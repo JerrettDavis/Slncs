@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System.Xml.Linq;
@@ -9,12 +6,27 @@ using Task = Microsoft.Build.Utilities.Task;
 
 namespace Slncs.Sdk;
 
+/// <summary>
+/// MSBuild task that parses a generated <c>.slnx</c> file and emits its referenced project files
+/// as <see cref="ITaskItem"/>s so they can be forwarded to subsequent <c>MSBuild</c> invocations.
+/// </summary>
+/// <remarks>
+/// The task expects the <c>.slnx</c> layout produced by the Slncs generator: a root <c>&lt;Solution&gt;</c>
+/// element with zero or more <c>&lt;Project Path="relative/path.csproj" /&gt;</c> child nodes.
+/// </remarks>
 [UsedImplicitly]
 public sealed class SlnxParse : Task
 {
+    /// <summary>The absolute path to the <c>.slnx</c> file to parse.</summary>
     [Required] public required string SlnxFile { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The list of distinct project files discovered in the <see cref="SlnxFile"/> that physically
+    /// exist on disk. Missing project paths are logged but excluded from the output.
+    /// </summary>
     [Output] public ITaskItem[] Projects { get; set; } = [];
 
+    /// <inheritdoc />
     public override bool Execute()
     {
         if (string.IsNullOrWhiteSpace(SlnxFile) || !File.Exists(SlnxFile))

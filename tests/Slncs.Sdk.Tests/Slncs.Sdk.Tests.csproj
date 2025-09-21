@@ -22,6 +22,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Slncs.Sdk\Slncs.Sdk.csproj" />
+      <ProjectReference Include="..\..\SlncsGen\SlncsGen.csproj" />
     </ItemGroup>
 
 </Project>

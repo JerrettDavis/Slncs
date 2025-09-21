@@ -1,8 +1,4 @@
-using System;
 using System.Diagnostics;
-using System.IO;
-using System.Text.RegularExpressions;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace E2E.Tests;
@@ -53,5 +49,45 @@ public class EndToEndBuildTests(ITestOutputHelper output)
                 output.WriteLine(path);
         }
         Assert.True(File.Exists(consoleDll), "Console application should have been built by direct parse pipeline.");
+    }
+
+    [Fact]
+    public void Slncs_Build_Tool_Works_On_Pure_Script()
+    {
+        var root = RepoRoot();
+        var samplesDir = Path.Combine(root, "samples");
+        var toolDir = Path.Combine(root, "Slncs.Tool");
+        Assert.True(Directory.Exists(toolDir), "Tool project must exist");
+
+        var pureScript = Path.Combine(samplesDir, "MyCsSlnSingle.slncs");
+        File.WriteAllText(pureScript, "using Slncs;\nSolution.Create()\n    .Folder(\"/Solution Items\", f => f.Files(\"Directory.Build.props\"))\n    .Project(@\"src/ClassLibrary1/ClassLibrary1.csproj\")\n    .Project(@\"src/ConsoleApp1/ConsoleApp1.csproj\")\n    .Write(OutputPath);\n");
+
+        var psi = new ProcessStartInfo("dotnet", $"run --project \"{toolDir}\" -- \"{pureScript}\"")
+        {
+            RedirectStandardError = true,
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+            WorkingDirectory = samplesDir
+        };
+        var p = Process.Start(psi)!;
+        p.WaitForExit();
+        var stdout = p.StandardOutput.ReadToEnd();
+        var stderr = p.StandardError.ReadToEnd();
+        if (p.ExitCode != 0)
+        {
+            output.WriteLine("--- tool stdout ---\n" + stdout);
+            output.WriteLine("--- tool stderr ---\n" + stderr);
+        }
+        Assert.Equal(0, p.ExitCode);
+        output.WriteLine(stdout);
+
+        var slnx = Path.Combine(samplesDir, "obj", "MyCsSlnSingle.slnx");
+        Assert.True(File.Exists(slnx), ".slnx should be generated for pure script.");
+
+        var consoleDll = Path.Combine(samplesDir, "src", "ConsoleApp1", "bin", "Debug", "net8.0", "ConsoleApp1.dll");
+        Assert.True(File.Exists(consoleDll), "Console application should have been built by slncs-build tool.");
+
+        // cleanup generated script to keep repo clean for subsequent tests
+        try { File.Delete(pureScript); } catch { /* ignore */ }
     }
 }

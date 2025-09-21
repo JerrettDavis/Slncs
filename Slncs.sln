@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slncs", "Slncs\Slncs.csproj", "{AD4746CF-A83D-44AA-9965-43B0686C6960}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlncsGen", "SlncsGen\SlncsGen.csproj", "{BA58E797-6BDC-45A2-A255-0E6FAC59C7BF}"
@@ -11,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slncs.Sdk.Tests", "tests\Slncs.Sdk.Tests\Slncs.Sdk.Tests.csproj", "{F0C6D9D0-5414-452D-9A72-CC4B7EDA8D4E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E2E.Tests", "tests\E2E.Tests\E2E.Tests.csproj", "{AE02A255-344E-4103-B9EA-372DC118A1E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slncs.Tool", "Slncs.Tool\Slncs.Tool.csproj", "{2B4E4C5C-2258-4CAF-9A68-4C83F815623D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,5 +43,9 @@ Global
 		{AE02A255-344E-4103-B9EA-372DC118A1E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE02A255-344E-4103-B9EA-372DC118A1E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE02A255-344E-4103-B9EA-372DC118A1E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B4E4C5C-2258-4CAF-9A68-4C83F815623D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B4E4C5C-2258-4CAF-9A68-4C83F815623D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B4E4C5C-2258-4CAF-9A68-4C83F815623D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B4E4C5C-2258-4CAF-9A68-4C83F815623D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

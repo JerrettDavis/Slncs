@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.Build.Framework;
 using System.Xml.Linq;
@@ -8,13 +5,23 @@ using Task = Microsoft.Build.Utilities.Task;
 
 namespace Slncs.Sdk;
 
+/// <summary>
+/// MSBuild task that invokes the Slncs generator (<c>SlncsGen.dll</c>) on a C# solution script
+/// to produce a <c>.slnx</c> file and (optionally) an aggregator project listing all referenced projects.
+/// </summary>
 [UsedImplicitly]
 public sealed class SlncsExec : Task
 {
+    /// <summary>Path to the input C# solution script file (<c>.slncs</c> or <c>.slncs.cs</c>).</summary>
     [Required] public string SlncsFile { get; set; } = string.Empty;
+
+    /// <summary>Destination path for the generated <c>.slnx</c> file.</summary>
     [Required] public string OutFile { get; set; } = string.Empty;
+
+    /// <summary>Path to the compiled generator assembly (<c>SlncsGen.dll</c>).</summary>
     [Required] public string GeneratorDll { get; set; } = string.Empty;
 
+    /// <inheritdoc />
     public override bool Execute()
     {
         var exit = SlncsRunner.Run(
@@ -46,6 +53,12 @@ public sealed class SlncsExec : Task
         return true;
     }
 
+    /// <summary>
+    /// Creates a lightweight no-targets aggregator project (<c>.slnx.proj</c>) referencing all
+    /// discovered project paths inside the generated solution. This enables a single MSBuild invocation
+    /// (e.g. for IDE loading or building everything) without parsing the <c>.slnx</c> file again.
+    /// </summary>
+    /// <param name="slnxPath">Absolute path to the generated <c>.slnx</c>.</param>
     private void GenerateAggregator(string slnxPath)
     {
         if (!File.Exists(slnxPath)) return;

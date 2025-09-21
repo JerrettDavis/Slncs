@@ -5,5 +5,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <AssemblyName>Slncs</AssemblyName>
         <RootNamespace>Slncs</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 </Project>

@@ -10,11 +10,13 @@
         <PackageId>Slncs.Sdk</PackageId>
         <Version>0.1.20</Version>
         <Authors>Jerrett Davis</Authors>
-        <Description>MSBuild SDK wrapper that generates .slnx from fluent .slncs.cs and forwards build.</Description>
+        <Description>Fluent C# solution (.slnx) generator MSBuild SDK. Supports wrapper .slncs projects and pure script workflow via the slncs-build tool.</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/JerrettDavis/Slncs</RepositoryUrl>
         <PackageTags>msbuild;sdk;slnx;solution;dotnet</PackageTags>
         <IncludeBuildOutput>true</IncludeBuildOutput>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>CS1591</NoWarn>
     </PropertyGroup>
 
     <!-- Ship Sdk.props/targets as buildTransitive so consumers auto-import them -->
