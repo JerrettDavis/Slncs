@@ -25,17 +25,19 @@
         <None Include="Sdk\Sdk.targets" Pack="true" PackagePath="Sdk/Sdk.targets" />
     </ItemGroup>
 
-    <!-- Tools: include generator + all its copied local dependencies -->
     <ItemGroup>
-        <Content Include="tools\net8.0\any\*.dll" Pack="true" PackagePath="tools/net8.0/any" />
-        <Content Include="tools\net8.0\any\*.pdb" Pack="true" PackagePath="tools/net8.0/any" />
-        <Content Include="tools\net8.0\any\*.json" Pack="true" PackagePath="tools/net8.0/any" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="JetBrains.Annotations" />
       <PackageReference Include="Microsoft.Build.Framework" />
       <PackageReference Include="Microsoft.Build.Utilities.Core" />
+    </ItemGroup>
+
+    <!-- Ensure generator project builds first; we copy its output into tools directory via its own target -->
+    <ItemGroup>
+      <ProjectReference Include="..\SlncsGen\SlncsGen.csproj" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <!-- Statically include anything placed under tools/net8.0/any (populated by SlncsGen CopyAfterBuild target) -->
+    <ItemGroup>
+      <None Include="tools\net8.0\any\**\*.*" Pack="true" PackagePath="tools/net8.0/any" Condition="Exists('tools\\net8.0\\any')" />
     </ItemGroup>
 
     <!-- Make sure the SDK assembly is also packaged (lib/net8.0/Slncs.Sdk.dll) -->
@@ -48,11 +50,11 @@
       <PropertyGroup>
         <_LocalFeedDir>$(MSBuildProjectDirectory)\..\local-packages</_LocalFeedDir>
       </PropertyGroup>
-      <MakeDir Directories="$( _LocalFeedDir )" />
+      <MakeDir Directories="$(_LocalFeedDir)" />
       <ItemGroup>
         <_BuiltPackages Include="$(OutputPath)Slncs.Sdk.*.nupkg" />
       </ItemGroup>
-      <Copy SourceFiles="@(_BuiltPackages)" DestinationFolder="$( _LocalFeedDir )" SkipUnchangedFiles="true" />
-      <Message Text="[slncs] Copied packages to $( _LocalFeedDir )" Importance="Low" />
+      <Copy SourceFiles="@(_BuiltPackages)" DestinationFolder="$(_LocalFeedDir)" SkipUnchangedFiles="true" />
+      <Message Text="[slncs] Copied packages to $(_LocalFeedDir)" Importance="Low" />
     </Target>
 </Project>

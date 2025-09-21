@@ -13,6 +13,7 @@ internal static class Program
     {
         var root = new RootCommand("Build a Slncs C# solution script without manually authoring the XML wrapper.");
         root.Add(ScriptOrWrapperArg);
+        root.TreatUnmatchedTokensAsErrors = false; // allow /p: or -p: msbuild property overrides to flow through
         return root;
     }
 

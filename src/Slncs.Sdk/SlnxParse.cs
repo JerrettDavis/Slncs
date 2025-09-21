@@ -1,7 +1,6 @@
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System.Xml.Linq;
-using JetBrains.Annotations;
 using Task = Microsoft.Build.Utilities.Task;
 
 namespace Slncs.Sdk;
@@ -14,7 +13,6 @@ namespace Slncs.Sdk;
 /// The task expects the <c>.slnx</c> layout produced by the Slncs generator: a root <c>&lt;Solution&gt;</c>
 /// element with zero or more <c>&lt;Project Path="relative/path.csproj" /&gt;</c> child nodes.
 /// </remarks>
-[UsedImplicitly]
 public sealed class SlnxParse : Task
 {
     /// <summary>The absolute path to the <c>.slnx</c> file to parse.</summary>

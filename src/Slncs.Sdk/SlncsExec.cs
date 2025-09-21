@@ -1,14 +1,9 @@
-using System;
-using System.IO;
-using System.Linq;
-using JetBrains.Annotations;
-using Microsoft.Build.Framework;
 using System.Xml.Linq;
+using Microsoft.Build.Framework;
 using Task = Microsoft.Build.Utilities.Task;
 
 namespace Slncs.Sdk;
 
-[UsedImplicitly]
 public sealed class SlncsExec : Task
 {
     [Required] public string SlncsFile { get; set; } = string.Empty;
@@ -59,9 +54,11 @@ public sealed class SlncsExec : Task
             .Where(File.Exists)
             .ToList() ?? new();
         if (projects.Count == 0) return;
+
         string Rel(string abs) => abs.StartsWith(wrapperDir, StringComparison.OrdinalIgnoreCase)
             ? abs.Substring(wrapperDir.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
             : abs;
+
         var aggregatorPath = slnxPath + ".proj";
         using var sw = new StreamWriter(aggregatorPath, false);
         sw.WriteLine("<Project Sdk=\"Microsoft.Build.NoTargets/3.6.0\">");
@@ -71,6 +68,7 @@ public sealed class SlncsExec : Task
             var rel = Rel(abs).Replace("\\", "/");
             sw.WriteLine($"    <ProjectReference Include=\"{rel}\" />");
         }
+
         sw.WriteLine("  </ItemGroup>");
         sw.WriteLine("</Project>");
         Log.LogMessage(MessageImportance.Low, $"Created aggregator: {aggregatorPath}");

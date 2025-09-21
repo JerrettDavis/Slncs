@@ -37,20 +37,19 @@ jobs:
           dotnet restore --use-lock-file
           dotnet tool restore || true
 
-      - name: Drift check (generator outputs in SDK tools folder)
+      - name: Verify no committed prebuilt tool binaries
         shell: bash
         run: |
           set -euo pipefail
-          git config --global core.autocrlf false
-          # Rebuild generator (copies into Slncs.Sdk/tools/net8.0/any)
-          dotnet build SlncsGen/SlncsGen.csproj -c Release --no-restore
-          if ! git diff --quiet --exit-code -- Slncs.Sdk/tools/net8.0/any; then
-            echo "::group::Drift diff"
-            git --no-pager diff -- Slncs.Sdk/tools/net8.0/any
-            echo "::endgroup::"
-            echo "::error title=Generated tool payload out of date::Run 'dotnet build SlncsGen/SlncsGen.csproj -c Release' and commit updated Slncs.Sdk/tools/net8.0/any contents."
-            exit 1
+          echo "Checking for tracked binaries under src/Slncs.Sdk/tools/net8.0/any ..."
+          # List tracked files matching binary payload patterns
+          TRACKED=$(git ls-files 'src/Slncs.Sdk/tools/net8.0/any/*' | grep -E '\.(dll|pdb|json|deps|runtimeconfig)$' || true)
+          if [ -n "$TRACKED" ]; then
+            echo "::group::Tracked prebuilt files"; echo "$TRACKED"; echo "::endgroup::"
+            echo "::error title=Prebuilt binaries detected::Remove committed tool payload artifacts (they will be produced during Pack).";
+            exit 1;
           fi
+          echo "No committed prebuilt tool binaries detected."
 
       - name: Build (Release)
         run: dotnet build Slncs.sln --configuration Release --no-restore /p:ContinuousIntegrationBuild=true
@@ -136,19 +135,18 @@ jobs:
           dotnet restore --use-lock-file
           dotnet tool restore || true
 
-      - name: Drift check (generator outputs in SDK tools folder)
+      - name: Verify no committed prebuilt tool binaries
         shell: bash
         run: |
           set -euo pipefail
-          git config --global core.autocrlf false
-          dotnet build SlncsGen/SlncsGen.csproj -c Release --no-restore
-          if ! git diff --quiet --exit-code -- Slncs.Sdk/tools/net8.0/any; then
-            echo "::group::Drift diff"
-            git --no-pager diff -- Slncs.Sdk/tools/net8.0/any
-            echo "::endgroup::"
-            echo "::error title=Generated tool payload out of date::Run 'dotnet build SlncsGen/SlncsGen.csproj -c Release' and commit updated Slncs.Sdk/tools/net8.0/any contents."
-            exit 1
+          echo "Checking for tracked binaries under src/Slncs.Sdk/tools/net8.0/any ..."
+          TRACKED=$(git ls-files 'src/Slncs.Sdk/tools/net8.0/any/*' | grep -E '\.(dll|pdb|json|deps|runtimeconfig)$' || true)
+          if [ -n "$TRACKED" ]; then
+            echo "::group::Tracked prebuilt files"; echo "$TRACKED"; echo "::endgroup::"
+            echo "::error title=Prebuilt binaries detected::Remove committed tool payload artifacts (they will be produced during Pack).";
+            exit 1;
           fi
+          echo "No committed prebuilt tool binaries detected."
 
       - name: Fetch tags
         run: git fetch --prune --tags
@@ -250,4 +248,3 @@ jobs:
             --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
             --api-key "${{ secrets.GITHUB_TOKEN }}" \
             --skip-duplicate || true
-

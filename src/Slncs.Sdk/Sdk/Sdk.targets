@@ -4,7 +4,11 @@
   <UsingTask TaskName="Slncs.Sdk.SlnxParse" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\net8.0\Slncs.Sdk.dll" />
 
   <PropertyGroup>
-    <_SlncsGenDll>$(MSBuildThisFileDirectory)..\tools\net8.0\any\SlncsGen.dll</_SlncsGenDll>
+    <!-- Allow override of generator dll location (used by E2E tests to point at locally built bits) -->
+    <SlncsGenDllPath Condition="'$(SlncsGenDllPath)'=='' and '$(SLNCS_GEN_DLL)'!=''">$(SLNCS_GEN_DLL)</SlncsGenDllPath>
+    <SlncsGenDllPath Condition="'$(SlncsGenDllPath)'==''">$(MSBuildThisFileDirectory)..\tools\net8.0\any\SlncsGen.dll</SlncsGenDllPath>
+    <!-- Back-compat internal name -->
+    <_SlncsGenDll>$(SlncsGenDllPath)</_SlncsGenDll>
   </PropertyGroup>
 
   <!-- Build pipeline for wrapper only -->

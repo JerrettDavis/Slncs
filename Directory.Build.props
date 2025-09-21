@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <Deterministic>true</Deterministic>
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+        <NoWarn>NU5104</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
