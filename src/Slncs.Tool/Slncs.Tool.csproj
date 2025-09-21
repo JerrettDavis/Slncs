@@ -14,8 +14,9 @@
     <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="System.CommandLine" />
     <!-- Reference the SDK assembly so we can reflect its version if desired -->
     <ProjectReference Include="..\Slncs.Sdk\Slncs.Sdk.csproj" />
+    <ProjectReference Include="..\SlncsGen\SlncsGen.csproj" />
   </ItemGroup>
 </Project>

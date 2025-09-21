@@ -4,17 +4,5 @@
         <name>SlncsGen</name>
     </assembly>
     <members>
-        <member name="T:SlncsGen.ScriptGlobals">
-            <summary>
-            Globals passed into the Slncs C# script at execution time. The script writes the
-            generated solution using <see cref="P:SlncsGen.ScriptGlobals.OutputPath"/> as the target <c>.slnx</c> file.
-            </summary>
-        </member>
-        <member name="P:SlncsGen.ScriptGlobals.OutputPath">
-            <summary>
-            The fully qualified path where the generator should write the produced <c>.slnx</c> file.
-            Provided by the hosting generator runner.
-            </summary>
-        </member>
     </members>
 </doc>

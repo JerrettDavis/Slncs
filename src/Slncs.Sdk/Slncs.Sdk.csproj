@@ -33,9 +33,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
-      <PackageReference Include="Microsoft.Build.Framework" Version="17.14.8" />
-      <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.14.8" />
+      <PackageReference Include="JetBrains.Annotations" />
+      <PackageReference Include="Microsoft.Build.Framework" />
+      <PackageReference Include="Microsoft.Build.Utilities.Core" />
     </ItemGroup>
 
     <!-- Make sure the SDK assembly is also packaged (lib/net8.0/Slncs.Sdk.dll) -->

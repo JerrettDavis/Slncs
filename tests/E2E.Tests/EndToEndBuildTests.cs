@@ -59,7 +59,7 @@ public class EndToEndBuildTests(ITestOutputHelper output)
     {
         var root = RepoRoot();
         var samplesBaseDir = Path.Combine(root, "samples");
-        var samplesDir = Path.Combine(samplesBaseDir, "template");
+        var samplesDir = Path.Combine(samplesBaseDir, "pure");
         var toolDir = Path.Combine(root, "src", "Slncs.Tool");
         Assert.True(Directory.Exists(toolDir), "Tool project must exist");
 

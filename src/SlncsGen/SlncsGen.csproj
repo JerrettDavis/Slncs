@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -11,14 +11,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.14.0"/>
-        <PackageReference Include="System.CommandLine" Version="2.0.0-rc.1.25451.107"/>
-        <PackageReference Include="System.Collections.Immutable" Version="9.0.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" />
+        <PackageReference Include="System.CommandLine" />
+        <PackageReference Include="System.Collections.Immutable" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Slncs\Slncs.csproj"/>
+        <ProjectReference Include="..\Slncs\Slncs.csproj" />
     </ItemGroup>
     
     <Target Name="CopyAfterBuild" AfterTargets="Build">
