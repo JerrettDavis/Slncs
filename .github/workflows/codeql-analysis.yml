@@ -37,10 +37,10 @@ jobs:
           languages: csharp
 
       - name: Restore
-        run: dotnet restore TinyBDD.sln --use-lock-file
+        run: dotnet restore Slncs.slnx --use-lock-file
 
       - name: Build
-        run: dotnet build TinyBDD.sln --configuration Release --no-restore
+        run: dotnet build Slncs.slnx --configuration Release --no-restore
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
