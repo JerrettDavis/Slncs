@@ -2,9 +2,6 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>CS1591;NU5104</NoWarn>
@@ -22,17 +19,18 @@
         <ProjectReference Include="..\Slncs\Slncs.csproj" />
     </ItemGroup>
     
+    
     <Target Name="CopyAfterBuild" AfterTargets="Build">
-        <MakeDir Directories="..\Slncs.Sdk\tools\net8.0\any" />
+        <MakeDir Directories="..\Slncs.Sdk\tools\$(TargetFramework)\any" />
         <ItemGroup>
             <_AllRuntimeDependencies Include="$(OutputPath)*.dll" />
             <_AllRuntimeDependencies Include="$(OutputPath)*.xml" Condition="Exists('$(OutputPath)%(Filename)%(Extension)')" />
             <_AllRuntimeDependencies Include="$(OutputPath)*.json" Condition="Exists('$(OutputPath)%(Filename)%(Extension)')" />
         </ItemGroup>
-        <Copy SourceFiles="@(_AllRuntimeDependencies)" DestinationFolder="..\Slncs.Sdk\tools\net8.0\any" SkipUnchangedFiles="true" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="..\Slncs.Sdk\tools\net8.0\any" Condition="Exists('$(OutputPath)$(AssemblyName).pdb')" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).runtimeconfig.json" DestinationFolder="..\Slncs.Sdk\tools\net8.0\any" Condition="Exists('$(OutputPath)$(AssemblyName).runtimeconfig.json')" />
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).deps.json" DestinationFolder="..\Slncs.Sdk\tools\net8.0\any" Condition="Exists('$(OutputPath)$(AssemblyName).deps.json')" />
+        <Copy SourceFiles="@(_AllRuntimeDependencies)" DestinationFolder="..\Slncs.Sdk\tools\$(TargetFramework)\any" SkipUnchangedFiles="true" />
+        <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFolder="..\Slncs.Sdk\tools\$(TargetFramework)\any" Condition="Exists('$(OutputPath)$(AssemblyName).pdb')" />
+        <Copy SourceFiles="$(OutputPath)$(AssemblyName).runtimeconfig.json" DestinationFolder="..\Slncs.Sdk\tools\$(TargetFramework)\any" Condition="Exists('$(OutputPath)$(AssemblyName).runtimeconfig.json')" />
+        <Copy SourceFiles="$(OutputPath)$(AssemblyName).deps.json" DestinationFolder="..\Slncs.Sdk\tools\$(TargetFramework)\any" Condition="Exists('$(OutputPath)$(AssemblyName).deps.json')" />
     </Target>
 
 </Project>

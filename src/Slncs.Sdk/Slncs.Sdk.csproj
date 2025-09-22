@@ -1,14 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-
-        <!-- Pack as an MSBuild SDK-like package -->
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <IsPackable>true</IsPackable>
         <PackageId>Slncs.Sdk</PackageId>
-        <Version>0.1.20</Version>
+        <Version>0.1.21</Version>
         <Authors>Jerrett Davis</Authors>
         <Description>Fluent C# solution (.slnx) generator MSBuild SDK. Supports wrapper .slncs projects and pure script workflow via the slncs-build tool.</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -28,6 +21,10 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.Build.Framework" />
       <PackageReference Include="Microsoft.Build.Utilities.Core" />
+      <PackageReference Include="PolySharp">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 
     <!-- Ensure generator project builds first; we copy its output into tools directory via its own target -->
@@ -35,12 +32,11 @@
       <ProjectReference Include="..\SlncsGen\SlncsGen.csproj" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
-    <!-- Statically include anything placed under tools/net8.0/any (populated by SlncsGen CopyAfterBuild target) -->
     <ItemGroup>
-      <None Include="tools\net8.0\any\**\*.*" Pack="true" PackagePath="tools/net8.0/any" Condition="Exists('tools\\net8.0\\any')" />
+      <None Include="tools\$(TargetFramework)\any\**\*.*" Pack="true" PackagePath="tools/$(TargetFramework)/any" Condition="Exists('tools\\net8.0\\any')" />
     </ItemGroup>
 
-    <!-- Make sure the SDK assembly is also packaged (lib/net8.0/Slncs.Sdk.dll) -->
+    <!-- Make sure the SDK assembly is also packaged (lib/$(TargetFramework)/Slncs.Sdk.dll) -->
     <PropertyGroup>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>

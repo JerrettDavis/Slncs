@@ -1,9 +1,15 @@
 using System.Diagnostics;
+using System.Xml.Linq;
+using TinyBDD;
+using TinyBDD.Xunit;
+using Xunit.Abstractions;
 
 namespace Slncs.Tests;
 
-public class GeneratorSmokeTests
+[Feature("Generator Smoke")]
+public class GeneratorSmokeTests(ITestOutputHelper output) : TinyBddXunitBase(output)
 {
+    // ---------------- Helpers ----------------
     private static string RepoRoot()
     {
         var bin = AppContext.BaseDirectory;
@@ -13,14 +19,37 @@ public class GeneratorSmokeTests
     private static string DetectConfiguration()
     {
         var bin = AppContext.BaseDirectory;
-        return bin.IndexOf(Path.DirectorySeparatorChar + "Release" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) >= 0 ? "Release" : "Debug";
+        return bin.IndexOf(Path.DirectorySeparatorChar + "Release" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) >= 0
+            ? "Release"
+            : "Debug";
     }
 
-    [Fact]
-    public void Generator_Produces_Slnx_From_Script()
+    private static string EnsureGeneratorPath()
     {
         var root = RepoRoot();
         var cfg = DetectConfiguration();
+        var exe = Path.Combine(root, "src", "SlncsGen", "bin", cfg, "net8.0", "SlncsGen.dll");
+        if (File.Exists(exe))
+            return exe;
+        var proj = Path.Combine(root, "src", "SlncsGen", "SlncsGen.csproj");
+        var psi = new ProcessStartInfo("dotnet", $"build \"{proj}\" -c {cfg} --nologo")
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            WorkingDirectory = root
+        };
+        using var p = Process.Start(psi)!;
+        p.WaitForExit();
+        return exe;
+    }
+
+    private record GenContext(string Generator, string Script, string OutPath, int ExitCode);
+
+    private static GenContext InitContext(string generatorPath) => new(generatorPath, string.Empty, string.Empty, 0);
+
+    private static GenContext CreateValidScript(GenContext ctx)
+    {
         var tmp = Path.Combine(Path.GetTempPath(), "slncs-gen-" + Guid.NewGuid().ToString("n"));
         Directory.CreateDirectory(tmp);
 
@@ -28,42 +57,51 @@ public class GeneratorSmokeTests
         var outPath = Path.Combine(tmp, "test.slnx");
         File.WriteAllText(script, """
                                   using Slncs;
-                                  Solution.Create().Project(@"src\Demo\Demo.csproj").Write(OutputPath);
+                                  Solution.Create().Project(@"src\\Demo\\Demo.csproj").Write(OutputPath);
                                   """);
+        return ctx with { Script = script, OutPath = outPath };
+    }
 
-        var exe = Path.Combine(root, "src", "SlncsGen", "bin", cfg, "net8.0", "SlncsGen.dll");
-        if (!File.Exists(exe))
-        {
-            // Attempt to build the generator for current configuration (especially needed in CI Release + --no-build scenarios)
-            var proj = Path.Combine(root, "src", "SlncsGen", "SlncsGen.csproj");
-            var build = Process.Start(new ProcessStartInfo("dotnet", $"build \"{proj}\" -c {cfg} --nologo")
-            {
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                WorkingDirectory = root
-            });
-            build!.WaitForExit();
-        }
-
-        Assert.True(File.Exists(exe), $"SlncsGen.dll must be built before tests (looked for {exe}).");
-
-        var psi = new ProcessStartInfo("dotnet", $"exec \"{exe}\" --slncs \"{script}\" --out \"{outPath}\"")
+    private static GenContext ExecuteGenerator(GenContext ctx)
+    {
+        Assert.True(File.Exists(ctx.Generator), $"SlncsGen.dll must be built before tests (looked for {ctx.Generator}).");
+        var psi = new ProcessStartInfo("dotnet", $"exec \"{ctx.Generator}\" --slncs \"{ctx.Script}\" --out \"{ctx.OutPath}\"")
         {
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,
-            WorkingDirectory = tmp
+            WorkingDirectory = Path.GetDirectoryName(ctx.Script)!
         };
         using var p = Process.Start(psi)!;
         p.WaitForExit();
-
-        if (p.ExitCode != 0)
-        {
-            throw new Xunit.Sdk.XunitException($"Generator exited with code {p.ExitCode}\nSTDOUT:\n{File.ReadAllText(script)}");
-        }
-
-        Assert.Equal(0, p.ExitCode);
-        Assert.True(File.Exists(outPath), "Generator should emit the .slnx.");
+        return ctx with { ExitCode = p.ExitCode };
     }
+
+    // ---------------- Assertions ----------------
+    private static void AssertGeneratorExists(string exe) => Assert.True(File.Exists(exe), $"Generator not found at {exe}");
+    private static void AssertExitCodeZero(GenContext ctx) => Assert.Equal(0, ctx.ExitCode);
+    private static void AssertOutputExists(GenContext ctx) => Assert.True(File.Exists(ctx.OutPath), "Generator should emit the .slnx.");
+    private static void AssertOutputNonEmpty(GenContext ctx) => Assert.True(new FileInfo(ctx.OutPath).Length > 0, "Output file should not be empty.");
+
+    private static void AssertOutputXmlHasSolutionRoot(GenContext ctx)
+    {
+        var doc = XDocument.Load(ctx.OutPath);
+        Assert.NotNull(doc.Root);
+        Assert.Equal("Solution", doc.Root!.Name.LocalName);
+    }
+
+    // ---------------- Scenario ----------------
+    [Fact]
+    [Scenario("Given a generator when a valid solution script is executed then an slnx file is produced successfully")]
+    public Task Generator_Produces_Slnx_From_Script()
+        => Given("an ensured generator path", EnsureGeneratorPath)
+            .Then("the generator exists", AssertGeneratorExists)
+            .When("a generation context is initialized", InitContext)
+            .When("a valid solution script is created", CreateValidScript)
+            .When("the generator is executed", ExecuteGenerator)
+            .Then("the exit code is zero", AssertExitCodeZero)
+            .And("the output file exists", AssertOutputExists)
+            .And("the output file is not empty", AssertOutputNonEmpty)
+            .And("the output XML has a Solution root", AssertOutputXmlHasSolutionRoot)
+            .AssertPassed();
 }

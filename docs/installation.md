@@ -28,7 +28,7 @@ Add `global.json` (if not already present) mapping the SDK version you just buil
 ```json
 {
   "msbuild-sdks": {
-    "Slncs.Sdk": "0.1.20"
+    "Slncs.Sdk": "0.1.21"
   }
 }
 ```

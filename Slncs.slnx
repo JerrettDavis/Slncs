@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="global.json" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/Src/">
+    <Project Path="src/Slncs.Sdk/Slncs.Sdk.csproj" />
+    <Project Path="src/Slncs.Tool/Slncs.Tool.csproj" />
+    <Project Path="src/Slncs/Slncs.csproj" />
+    <Project Path="src/SlncsGen/SlncsGen.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/E2E.Tests/E2E.Tests.csproj" />
+    <Project Path="tests/Slncs.Sdk.Tests/Slncs.Sdk.Tests.csproj" />
+    <Project Path="tests/Slncs.Tests/Slncs.Tests.csproj" />
+  </Folder>
+</Solution>

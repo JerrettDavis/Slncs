@@ -1,13 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>slncs-build</ToolCommandName>
     <Description>Command-line helper that builds a .slncs C# solution script by generating a transient wrapper project and invoking dotnet build.</Description>
     <PackageId>Slncs.Tool</PackageId>
-    <Authors>Jerrett Davis</Authors>
     <RepositoryUrl>https://github.com/JerrettDavis/Slncs</RepositoryUrl>
     <OutputType>Exe</OutputType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -15,7 +11,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.CommandLine" />
-    <!-- Reference the SDK assembly so we can reflect its version if desired -->
     <ProjectReference Include="..\Slncs.Sdk\Slncs.Sdk.csproj" />
     <ProjectReference Include="..\SlncsGen\SlncsGen.csproj" />
   </ItemGroup>

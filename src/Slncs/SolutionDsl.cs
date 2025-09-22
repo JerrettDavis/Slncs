@@ -85,8 +85,9 @@ public sealed class SolutionBuilder
         doc.Save(sw);
     }
 
-    private static string Norm(string p) => p.Replace('\\', Path.DirectorySeparatorChar)
-                                             .Replace('/', Path.DirectorySeparatorChar);
+    private static string Norm(string p) =>
+        p.Replace('\\', Path.DirectorySeparatorChar)
+            .Replace('/', Path.DirectorySeparatorChar);
 
     private static IEnumerable<Entry> Coalesce(IEnumerable<Entry> entries)
         => entries
@@ -167,13 +168,13 @@ public sealed class SolutionBuilder
             return this;
         }
 
-#if NET6_0_OR_GREATER        
+#if NET6_0_OR_GREATER
         internal FolderEntry Build() => new(_name, _files.DistinctBy(f => f.Path).ToList(), _folders);
 #else
         internal FolderEntry Build() => new(_name, DistinctBy(_files, f => f.Path).ToList(), _folders);        
         
         private static IEnumerable<T> DistinctBy<T, TKey>(IEnumerable<T> source, Func<T, TKey> keySelector)
-            => source.GroupBy(keySelector).Select(g => g.First());       
+            => source.GroupBy(keySelector).Select(g => g.First());
 #endif
     }
 }

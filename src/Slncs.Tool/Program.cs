@@ -58,27 +58,6 @@ internal static class Program
 
     private static int ProcessPath(string path, string[] extraArgs)
     {
-        bool IsXmlWrapper(string p)
-        {
-            try
-            {
-                using var sr = new StreamReader(p);
-                for (int i = 0; i < 5; i++)
-                {
-                    var line = sr.ReadLine();
-                    if (line == null) break;
-                    line = line.TrimStart();
-                    if (line.Length == 0) continue;
-                    return line.StartsWith("<Project", StringComparison.OrdinalIgnoreCase);
-                }
-            }
-            catch
-            {
-            }
-
-            return false;
-        }
-
         if (IsXmlWrapper(path))
         {
             Console.WriteLine($"[slncs-build] Detected wrapper project: {Path.GetFileName(path)}");
@@ -117,6 +96,28 @@ internal static class Program
         var exit = RunDotnetBuild(wrapperPath, extraArgs, scriptDir);
         Console.WriteLine($"[slncs-build] Exit code: {exit}");
         return exit;
+
+        bool IsXmlWrapper(string p)
+        {
+            try
+            {
+                using var sr = new StreamReader(p);
+                for (var i = 0; i < 5; i++)
+                {
+                    var line = sr.ReadLine();
+                    if (line == null) break;
+                    line = line.TrimStart();
+                    if (line.Length == 0) continue;
+                    return line.StartsWith("<Project", StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+
+            return false;
+        }
     }
 
     private static int RunDotnetBuild(string projectFile, string[] extraArgs, string? workingDir = null)
@@ -128,6 +129,14 @@ internal static class Program
             RedirectStandardError = true,
             UseShellExecute = false
         };
+#if NETSTANDARD2_0
+        var sb = new StringBuilder();
+        sb.Append("build ");
+        sb.Append(projectFile);
+        sb.Append(" -v:m --nologo");
+        foreach (var a in extraArgs.Where(a => !string.Equals(a, "slncs-build", StringComparison.OrdinalIgnoreCase)))
+            sb.Append(" ").Append(a);
+#else
         psi.ArgumentList.Add("build");
         psi.ArgumentList.Add(projectFile);
         psi.ArgumentList.Add("-v:m");
@@ -137,7 +146,7 @@ internal static class Program
             if (string.Equals(a, "slncs-build", StringComparison.OrdinalIgnoreCase)) continue;
             psi.ArgumentList.Add(a);
         }
-
+#endif
         using var proc = Process.Start(psi)!;
         proc.OutputDataReceived += (_, e) =>
         {

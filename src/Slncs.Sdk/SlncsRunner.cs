@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 
 namespace Slncs.Sdk;
 
@@ -55,12 +56,24 @@ public static class SlncsRunner
             UseShellExecute = false,
             WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(slncsFile))!
         };
+        
+#if NETSTANDARD2_0
+        var sb = new StringBuilder();
+        sb.Append("exec ");
+        sb.Append(generatorDll);
+        sb.Append(" --slncs ");
+        sb.Append(slncsFile);
+        sb.Append(" --out ");
+        sb.Append(outFile);
+        psi.Arguments = sb.ToString();
+#else
         psi.ArgumentList.Add("exec");
         psi.ArgumentList.Add(generatorDll);
         psi.ArgumentList.Add("--slncs");
         psi.ArgumentList.Add(slncsFile);
         psi.ArgumentList.Add("--out");
         psi.ArgumentList.Add(outFile);
+#endif
 
         using var proc = Process.Start(psi)!;
         proc.OutputDataReceived += (_, e) =>

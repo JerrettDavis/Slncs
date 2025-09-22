@@ -1,6 +1,6 @@
+using System.Xml.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using System.Xml.Linq;
 using Task = Microsoft.Build.Utilities.Task;
 
 namespace Slncs.Sdk;
@@ -37,21 +37,27 @@ public sealed class SlnxParse : Task
             var objDir = Path.GetDirectoryName(Path.GetFullPath(SlnxFile))!; // obj folder
             var wrapperDir = Path.GetFullPath(Path.Combine(objDir, ".."));   // wrapper project directory
             var doc = XDocument.Load(SlnxFile);
-            var raw = doc.Root?.Elements("Project").Select(e => e.Attribute("Path")?.Value).ToList() ?? new();
+            var raw = doc.Root?.Elements("Project").Select(e => e.Attribute("Path")?.Value).ToList() ?? [];
+            
             foreach (var r in raw)
                 Log.LogMessage(MessageImportance.High, $"[slncs-parse] Found entry Path='{r}'");
+            
             var projs = raw
                 .Where(p => !string.IsNullOrWhiteSpace(p))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .Select(p => Path.GetFullPath(Path.Combine(wrapperDir, p!)))
                 .Select(abs => new { abs, exists = File.Exists(abs) })
                 .ToList();
+            
             foreach (var item in projs)
                 Log.LogMessage(MessageImportance.High, $"[slncs-parse] Candidate '{item.abs}' Exists={item.exists}");
+            
             Projects = projs.Where(p => p.exists)
-                .Select(p => (ITaskItem)new TaskItem(p.abs))
-                .ToArray() ?? Array.Empty<ITaskItem>();
+                .Select(ITaskItem (p) => new TaskItem(p.abs))
+                .ToArray() ?? [];
+            
             Log.LogMessage(MessageImportance.Low, $"Parsed {Projects.Length} project(s) from {SlnxFile}");
+            
             return true;
         }
         catch (Exception ex)

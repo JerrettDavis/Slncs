@@ -1,37 +1,56 @@
 using System.Xml.Linq;
-using Slncs;
+using TinyBDD;
+using TinyBDD.Assertions;
+using TinyBDD.Xunit;
+using Xunit.Abstractions;
 
-public class SolutionDslTests
+namespace Slncs.Tests;
+
+[Feature("Solution DSL")]
+public class SolutionDslTests(ITestOutputHelper output) : TinyBddXunitBase(output)
 {
     [Fact]
-    public void Build_Emits_Expected_Minimal_Xml()
-    {
-        var xml = Solution.Create()
-            .Folder("/Solution Items", f => f.Files("Directory.Build.props"))
-            .Project(Path.Combine("src","A","A.csproj"))
-            .Project(Path.Combine("src","B","B.csproj"))
-            .Build();
+    [Scenario("Given a valid solution, when built, then generated XML should be valid")]
+    public Task GivenAValidSolution_WhenBuilt_ThenGeneratedXmlShouldBeValid()
+        => Given("a valid solution", () => Solution.Create()
+                .Folder("/Solution Items", f => f.Files("Directory.Build.props"))
+                .Project(Path.Combine("src", "A", "A.csproj"))
+                .Project(Path.Combine("src", "B", "B.csproj")))
+            .When("built", s => Task.FromResult(s.Build()))
+            .Then("the generated XML should be valid", xml =>
+            {
+                Assert.NotNull(xml.Root);
+                Assert.Equal("Solution", xml.Root!.Name.LocalName);
+            })
+            .And("should match expected structure", xml =>
+            {
+                var element = new XElement("Solution",
+                    new XElement("Folder", new XAttribute("Name", "/Solution Items/"),
+                        new XElement("File", new XAttribute("Path", "Directory.Build.props"))),
+                    new XElement("Project", new XAttribute("Path", Path.Combine("src", "A", "A.csproj"))),
+                    new XElement("Project", new XAttribute("Path", Path.Combine("src", "B", "B.csproj")))
+                );
 
-        var expected = new XElement("Solution",
-            new XElement("Folder", new XAttribute("Name","/Solution Items/"),
-                new XElement("File", new XAttribute("Path","Directory.Build.props"))),
-            new XElement("Project", new XAttribute("Path", Path.Combine("src","A","A.csproj")) ),
-            new XElement("Project", new XAttribute("Path", Path.Combine("src","B","B.csproj")) )
-        );
-
-        Assert.True(XNode.DeepEquals(xml.Root, expected), "Generated XML should match expected structure.");
-    }
+                Expect.For(XNode.DeepEquals(xml.Root, element)).ToBeTrue();
+            })
+            .AssertPassed();
 
     [Fact]
-    public void Write_Creates_File()
-    {
-        var tmp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("n"), "out.slnx");
-        Solution.Create().Project(Path.Combine("src","A","A.csproj")).Write(tmp);
-
-        Assert.True(File.Exists(tmp), "Write should create the .slnx file.");
-
-        var doc = XDocument.Load(tmp);
-        Assert.NotNull(doc.Root);
-        Assert.Equal("Solution", doc.Root!.Name.LocalName);
-    }
+    [Scenario("Given a valid solution, when written, then file should be created")]
+    public Task GivenAValidSolution_WhenWritten_ThenFileShouldBeCreated()
+        => Given("a valid solution", () => Solution.Create().Project(Path.Combine("src", "A", "A.csproj")))
+            .When("written to a temp file", s =>
+            {
+                var tmp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("n"), "out.slnx");
+                s.Write(tmp);
+                return tmp;
+            })
+            .Then("the file should exist", path => Assert.True(File.Exists(path)))
+            .And("the file should contain valid XML", path =>
+            {
+                var doc = XDocument.Load(path);
+                Assert.NotNull(doc.Root);
+                Assert.Equal("Solution", doc.Root!.Name.LocalName);
+            })
+            .AssertPassed();
 }

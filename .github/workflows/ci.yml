@@ -52,11 +52,11 @@ jobs:
           echo "No committed prebuilt tool binaries detected."
 
       - name: Build (Release)
-        run: dotnet build Slncs.sln --configuration Release --no-restore /p:ContinuousIntegrationBuild=true
+        run: dotnet build Slncs.slnx --configuration Release --no-restore /p:ContinuousIntegrationBuild=true
 
       - name: Test with coverage
         run: |
-          dotnet test Slncs.sln \
+          dotnet test Slncs.slnx \
             --configuration Release \
             --collect:"XPlat Code Coverage" \
             -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura \
@@ -168,7 +168,7 @@ jobs:
 
       - name: Build (Release)
         run: >
-          dotnet build Slncs.sln
+          dotnet build Slncs.slnx
           --configuration Release
           --no-restore
           /p:ContinuousIntegrationBuild=true
@@ -178,11 +178,11 @@ jobs:
           /p:PackageVersion=${{ env.PACKAGE_VERSION }}
 
       - name: Test (Release)
-        run: dotnet test Slncs.sln --configuration Release --no-build --verbosity normal
+        run: dotnet test Slncs.slnx --configuration Release --no-build --verbosity normal
 
       - name: Pack (all packable projects)
         run: >
-          dotnet pack Slncs.sln
+          dotnet pack Slncs.slnx
           --configuration Release
           --no-build
           --output ./artifacts

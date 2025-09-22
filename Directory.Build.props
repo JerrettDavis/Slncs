@@ -1,11 +1,20 @@
 <Project>
     <PropertyGroup>
+        <TargetFrameworks>net8.0;net9.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <Nullable>enable</Nullable>
         <Deterministic>true</Deterministic>
-        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-        <NoWarn>NU5104</NoWarn>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591;NU5104</NoWarn>
+        <WarningsNotAsErrors>$(WarningsNotAsErrors);NU5104</WarningsNotAsErrors>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <IsPackable>true</IsPackable>
+
+
+        <Authors>Jerrett Davis</Authors>
+        <RepositoryUrl>https://github.com/JerrettDavis/Slncs</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
