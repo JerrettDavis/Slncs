@@ -11,6 +11,11 @@
     <_SlncsGenDll>$(SlncsGenDllPath)</_SlncsGenDll>
   </PropertyGroup>
 
+  <!-- Normalize SlncsFile to absolute path so building from an obj-copied wrapper still finds the script -->
+  <PropertyGroup>
+    <SlncsFile Condition="'$(SlncsFile)' != '' and !$([System.IO.Path]::IsPathRooted('$(SlncsFile)'))">$(MSBuildProjectDirectory)\$(SlncsFile)</SlncsFile>
+  </PropertyGroup>
+
   <!-- Build pipeline for wrapper only -->
   <Target Name="Build" Condition="'$(SlncsWrapperProject)'=='true'">
     <Message Text="[slncs] Wrapper build starting (Project=$(MSBuildProjectFullPath))" Importance="High" />

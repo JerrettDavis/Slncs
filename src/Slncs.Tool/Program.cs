@@ -81,11 +81,21 @@ internal static class Program
         var wrapperName = baseName + ".wrapper.slncs";
         var wrapperPath = Path.Combine(tempDir, wrapperName);
 
+        var sdkVersionOverride = Environment.GetEnvironmentVariable("SLNCS_E2E_SDK_VERSION");
+        var sdkAttr = string.IsNullOrWhiteSpace(sdkVersionOverride) ? "Slncs.Sdk" : $"Slncs.Sdk/{sdkVersionOverride}";
+        Console.WriteLine($"[slncs-build] Wrapper Sdk attr: {sdkAttr}");
+
         var sb = new StringBuilder();
-        sb.AppendLine("<Project Sdk=\"Slncs.Sdk\">");
+        sb.AppendLine($"<Project Sdk=\"{sdkAttr}\">");
         sb.AppendLine("  <PropertyGroup>");
         sb.AppendLine($"    <SlncsFile>{path}</SlncsFile>");
         sb.AppendLine($"    <GeneratedSlnx>{slnxOut}</GeneratedSlnx>");
+        var e2eFeed = Environment.GetEnvironmentVariable("SLNCS_E2E_FEED");
+        if (!string.IsNullOrEmpty(e2eFeed))
+        {
+            // Ensure local feed is searched first
+            sb.AppendLine($"    <RestoreSources>{e2eFeed};https://api.nuget.org/v3/index.json</RestoreSources>");
+        }
         sb.AppendLine("  </PropertyGroup>");
         sb.AppendLine("</Project>");
         File.WriteAllText(wrapperPath, sb.ToString());

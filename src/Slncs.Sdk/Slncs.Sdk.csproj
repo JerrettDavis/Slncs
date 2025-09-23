@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <PackageId>Slncs.Sdk</PackageId>
-        <Version>0.1.21</Version>
+        <Version>0.1.22</Version>
         <Authors>Jerrett Davis</Authors>
         <Description>Fluent C# solution (.slnx) generator MSBuild SDK. Supports wrapper .slncs projects and pure script workflow via the slncs-build tool.</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
