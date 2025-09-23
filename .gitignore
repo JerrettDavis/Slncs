@@ -6,3 +6,10 @@ riderModule.iml
 .idea/
 /src/Slncs.Sdk/tools
 .local-feed/
+
+# E2E test artifacts
+.e2e-pack.lock*
+samples/.e2e-local-feed/
+samples/template/nuget.config
+samples/pure/nuget.config
+samples/pure/MyCsSlnSingle.slncs
