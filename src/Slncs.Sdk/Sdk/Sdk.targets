@@ -1,7 +1,7 @@
 <Project>
   <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" />
-  <UsingTask TaskName="Slncs.Sdk.SlncsExec" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\net8.0\Slncs.Sdk.dll" />
-  <UsingTask TaskName="Slncs.Sdk.SlnxParse" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\net8.0\Slncs.Sdk.dll" />
+  <UsingTask TaskName="Slncs.Sdk.SlncsExec" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\$(TargetFramework)\Slncs.Sdk.dll" />
+  <UsingTask TaskName="Slncs.Sdk.SlnxParse" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\$(TargetFramework)\Slncs.Sdk.dll" />
 
   <PropertyGroup>
     <!-- Allow override of generator dll location (used by E2E tests to point at locally built bits) -->

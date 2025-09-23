@@ -49,7 +49,6 @@ public sealed class SlncsExec : Task
 
         return true;
     }
-
     
     /// <summary>
     /// Creates a lightweight no-targets aggregator project (<c>.slnx.proj</c>) referencing all

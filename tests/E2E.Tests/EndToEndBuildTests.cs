@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 
 namespace E2E.Tests;
 
-[Feature("End To End Build")] // Added feature annotation
+[Feature("End To End Build")]
 public class EndToEndBuildTests : TinyBddXunitBase, IDisposable
 {
     private readonly ITestOutputHelper _output;
