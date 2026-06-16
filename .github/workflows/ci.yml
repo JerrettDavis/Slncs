@@ -174,10 +174,10 @@ jobs:
           --configuration Release
           --no-restore
           /p:ContinuousIntegrationBuild=true
-          /p:Version=${{ env.PACKAGE_VERSION }}
-          /p:AssemblyVersion=${{ env.ASSEMBLY_VERSION }}
-          /p:FileVersion=${{ env.FILE_VERSION }}
-          /p:PackageVersion=${{ env.PACKAGE_VERSION }}
+          /p:Version=$PACKAGE_VERSION
+          /p:AssemblyVersion=$ASSEMBLY_VERSION
+          /p:FileVersion=$FILE_VERSION
+          /p:PackageVersion=$PACKAGE_VERSION
 
       - name: Test (Release)
         run: dotnet test Slncs.slnx --configuration Release --no-build --verbosity normal
@@ -191,10 +191,10 @@ jobs:
           /p:ContinuousIntegrationBuild=true
           /p:IncludeSymbols=${{ env.INCLUDE_SYMBOLS }}
           /p:SymbolPackageFormat=snupkg
-          /p:Version=${{ env.PACKAGE_VERSION }}
-          /p:AssemblyVersion=${{ env.ASSEMBLY_VERSION }}
-          /p:FileVersion=${{ env.FILE_VERSION }}
-          /p:PackageVersion=${{ env.PACKAGE_VERSION }}
+          /p:Version=$PACKAGE_VERSION
+          /p:AssemblyVersion=$ASSEMBLY_VERSION
+          /p:FileVersion=$FILE_VERSION
+          /p:PackageVersion=$PACKAGE_VERSION
 
       - name: Upload packages as artifact
         uses: actions/upload-artifact@v7
@@ -220,8 +220,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: v${{ env.PACKAGE_VERSION }}
-          name: Release v${{ env.PACKAGE_VERSION }}
+          tag_name: v${{ steps.gitversion.outputs.nuGetVersionV2 }}
+          name: Release v${{ steps.gitversion.outputs.nuGetVersionV2 }}
           files: |
             ./artifacts/*.nupkg
             ./artifacts/*.snupkg
