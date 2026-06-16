@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 namespace Slncs.Tests;
 
 [Feature("Generator Smoke")]
-public class GeneratorSmokeTests(ITestOutputHelper output) : TinyBddXunitBase(output)
+public partial class GeneratorSmokeTests(ITestOutputHelper output) : TinyBddXunitBase(output)
 {
     // ---------------- Helpers ----------------
     private static string RepoRoot()

@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 namespace Slncs.Sdk.Tests;
 
 [Feature("Slncs Runner")]
-public class SlncsRunnerTests(ITestOutputHelper output) : TinyBddXunitBase(output)
+public partial class SlncsRunnerTests(ITestOutputHelper output) : TinyBddXunitBase(output)
 {
     // --------------------------- Helper / Environment ---------------------------
     private static string RepoRoot()
