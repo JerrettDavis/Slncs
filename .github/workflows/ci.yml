@@ -164,7 +164,7 @@ jobs:
 
       - name: Set version env vars
         run: |
-          echo "PACKAGE_VERSION=${{ steps.gitversion.outputs.nuGetVersionV2 }}" >> $GITHUB_ENV
+          echo "PACKAGE_VERSION=${{ steps.gitversion.outputs.semVer }}" >> $GITHUB_ENV
           echo "ASSEMBLY_VERSION=${{ steps.gitversion.outputs.assemblySemVer }}" >> $GITHUB_ENV
           echo "FILE_VERSION=${{ steps.gitversion.outputs.assemblySemFileVer }}" >> $GITHUB_ENV
 
@@ -220,8 +220,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: v${{ steps.gitversion.outputs.nuGetVersionV2 }}
-          name: Release v${{ steps.gitversion.outputs.nuGetVersionV2 }}
+          tag_name: v${{ steps.gitversion.outputs.semVer }}
+          name: Release v${{ steps.gitversion.outputs.semVer }}
           files: |
             ./artifacts/*.nupkg
             ./artifacts/*.snupkg
