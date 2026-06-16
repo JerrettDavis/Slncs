@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 namespace Slncs.Tests;
 
 [Feature("Solution DSL")]
-public class SolutionDslTests(ITestOutputHelper output) : TinyBddXunitBase(output)
+public partial class SolutionDslTests(ITestOutputHelper output) : TinyBddXunitBase(output)
 {
     [Fact]
     [Scenario("Given a valid solution, when built, then generated XML should be valid")]

@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 namespace E2E.Tests;
 
 [Feature("End To End Build")]
-public class EndToEndBuildTests : TinyBddXunitBase, IDisposable
+public partial class EndToEndBuildTests : TinyBddXunitBase, IDisposable
 {
     private readonly ITestOutputHelper _output;
     private readonly string _feedDir;
@@ -298,7 +298,7 @@ public class EndToEndBuildTests : TinyBddXunitBase, IDisposable
         return "0.1.0";
     }
 
-    public new void Dispose()
+    public void Dispose()
     {
         GC.SuppressFinalize(this);
         try { if (!string.IsNullOrEmpty(_nugetConfigPath) && File.Exists(_nugetConfigPath)) File.Delete(_nugetConfigPath); } catch { }
