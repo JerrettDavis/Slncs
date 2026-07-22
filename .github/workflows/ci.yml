@@ -115,7 +115,6 @@ jobs:
     permissions:
       contents: write
       packages: write
-      workflows: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
