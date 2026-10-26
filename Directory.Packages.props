@@ -14,7 +14,7 @@
     <PackageVersion Include="PolySharp" Version="1.16.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="10.0.13" />
     <PackageVersion Include="System.CommandLine" Version="2.0.13" />
-    <PackageVersion Include="TinyBDD.Xunit" Version="0.19.44" />
+    <PackageVersion Include="TinyBDD.Xunit" Version="0.19.46" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />
   </ItemGroup>
